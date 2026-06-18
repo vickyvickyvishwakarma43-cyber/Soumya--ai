@@ -1,5 +1,5 @@
-import streamlit as st
-from groq import Groq
+streamlit as st
+from groq imimportport Groq
 from PIL import Image
 
 st.set_page_config(page_title="Soumya - Vicky ki AI", page_icon="🤖")
