@@ -1,4 +1,4 @@
-streamlit as st
+ as st
 from groq imimportport Groq
 from PIL import Image
 
