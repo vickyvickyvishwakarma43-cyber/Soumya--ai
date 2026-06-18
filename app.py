@@ -1,37 +1,35 @@
 import streamlit as st
 from groq import Groq
+from PIL import Image
 
-st.set_page_config(page_title="Soumya AI", page_icon="🤖")
+st.set_page_config(page_title="Soumya - Vicky ki AI", page_icon="🤖")
+
 st.title("🤖 Soumya - Vicky ki AI")
-st.write("Namaste! Mujhe Vicky Vishwakarma ne banaya hai. Batao kya madad karu?")
+st.write("Namaste! Mujhe Vivek Vishwakarma aka Vicky ne banaya hai")
 
-GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
-client = Groq(api_key=GROQ_API_KEY)
+api_key = st.text_input("Groq API Key daalo:", type="password")
 
-if "messages" not in st.session_state:
-    st.session_state.messages = []
-
-for msg in st.session_state.messages:
-    with st.chat_message(msg["role"]):
-        st.markdown(msg["content"])
-
-if prompt := st.chat_input("Soumya se kuch pucho..."):
-    st.session_state.messages.append({"role": "user", "content": prompt})
-    with st.chat_message("user"):
-        st.markdown(prompt)
-
-    with st.chat_message("assistant"):
-        message_placeholder = st.empty()
-        full_response = ""
-        stream = client.chat.completions.create(
-            model="llama-3.1-8b-instant",
-            messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
-            stream=True
-        )
-        for chunk in stream:
-            full_response += chunk.choices[0].delta.content or ""
-            message_placeholder.markdown(full_response + "▌")
-        message_placeholder.markdown(full_response)
-    st.session_state.messages.append({"role": "assistant", "content": full_response})
-
-   
+if api_key:
+    client = Groq(api_key=api_key)
+    
+    tab1, tab2 = st.tabs(["💬 Baat Karo", "📸 Photo Bhejo"])
+    
+    with tab1:
+        user_input = st.text_input("Kuch bhi bolo mujhse:")
+        if user_input:
+            response = client.chat.completions.create(
+                messages=[{"role": "user", "content": user_input}],
+                model="llama-3.1-8b-instant"
+            )
+            st.write(response.choices[0].message.content)
+    
+    with tab2:
+        uploaded_file = st.file_uploader("Photo bhejo yaha:", type=["jpg", "png", "jpeg"])
+        if uploaded_file:
+            image = Image.open(uploaded_file)
+            st.image(image, caption="Teri photo", use_column_width=True)
+            st.write("Photo mil gayi Vicky bhai! Ab iske baare me pucho mujhse")
+            
+            question = st.text_input("Photo ke baare me kya puchna hai?")
+            if question:
+                st.write("Abhi photo samajhne wali AI jodni baaki hai. Par tu puch, main try karungi 😄")
