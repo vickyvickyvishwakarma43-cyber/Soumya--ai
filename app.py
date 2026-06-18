@@ -1,8 +1,9 @@
 import streamlit as st
 from groq import Groq
 
-st.set_page_config(page_title="Soumya AI", page_icon="🤖", layout="centered")
-st.title("🤖 Soumya - Teri AI Dost")
+st.set_page_config(page_title="Soumya AI", page_icon="🤖")
+st.title("🤖 Soumya - Vicky ki AI")
+st.write("Namaste! Mujhe Vicky Vishwakarma ne banaya hai. Batao kya madad karu?")
 
 GROQ_API_KEY = st.secrets["GROQ_API_KEY"]
 client = Groq(api_key=GROQ_API_KEY)
@@ -25,7 +26,7 @@ if prompt := st.chat_input("Soumya se kuch pucho..."):
         stream = client.chat.completions.create(
             model="llama-3.1-8b-instant",
             messages=[{"role": m["role"], "content": m["content"]} for m in st.session_state.messages],
-            stream=True,
+            stream=True
         )
         for chunk in stream:
             full_response += chunk.choices[0].delta.content or ""
@@ -33,7 +34,4 @@ if prompt := st.chat_input("Soumya se kuch pucho..."):
         message_placeholder.markdown(full_response)
     st.session_state.messages.append({"role": "assistant", "content": full_response})
 
-with st.sidebar:
-    if st.button("🗑️ Clear Chat"):
-        st.session_state.messages = []
-        st.rerun()
+   
